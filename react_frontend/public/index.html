@@ -2,46 +2,546 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#1A1A1A" />
-    <meta
-      name="description"
-      content="KAVIA AI Application"
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#f9fafb" />
+    <meta name="description" content="Static mock of a simple to-do list UI (add, edit, delete)." />
+
+    <!-- Inter font (matches existing template style direction) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <!-- Load Inter font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <title>KAVIA App</title>
+    <title>To‑Do List (Static Mock)</title>
+
+    <style>
+      :root {
+        /* Style guide (light, modern) */
+        --primary: #3b82f6; /* blue */
+        --success: #06b6d4; /* cyan */
+        --error: #ef4444; /* red */
+        --bg: #f9fafb;
+        --surface: #ffffff;
+        --text: #111827;
+        --muted: #64748b;
+        --border: rgba(15, 23, 42, 0.12);
+
+        --shadow: 0 12px 30px rgba(17, 24, 39, 0.08);
+        --radius-lg: 16px;
+        --radius-md: 12px;
+        --radius-sm: 10px;
+
+        --focus: 0 0 0 4px rgba(59, 130, 246, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
+          Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        background: linear-gradient(180deg, rgba(59, 130, 246, 0.1), var(--bg) 35%);
+      }
+
+      .page {
+        min-height: 100%;
+        display: grid;
+        place-items: start center;
+        padding: 40px 16px;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 760px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      header {
+        padding: 22px 22px 16px 22px;
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(
+          90deg,
+          rgba(59, 130, 246, 0.08),
+          rgba(6, 182, 212, 0.06)
+        );
+      }
+
+      .title-row {
+        display: flex;
+        gap: 12px;
+        align-items: baseline;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 20px;
+        letter-spacing: -0.02em;
+      }
+
+      .subtitle {
+        margin: 6px 0 0 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.65);
+        color: var(--muted);
+        font-size: 12px;
+        user-select: none;
+      }
+
+      .pill .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--success);
+        box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.14);
+      }
+
+      main {
+        padding: 18px 22px 22px 22px;
+      }
+
+      .input-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+
+      .label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+      }
+
+      .text-input {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 12px 12px;
+        font-size: 14px;
+        outline: none;
+        transition: box-shadow 150ms ease, border-color 150ms ease;
+        background: #fff;
+        color: var(--text);
+      }
+
+      .text-input::placeholder {
+        color: rgba(100, 116, 139, 0.75);
+      }
+
+      .text-input:focus {
+        border-color: rgba(59, 130, 246, 0.55);
+        box-shadow: var(--focus);
+      }
+
+      .btn {
+        border: 1px solid transparent;
+        border-radius: var(--radius-md);
+        padding: 12px 14px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 120ms ease, filter 120ms ease, box-shadow 120ms ease;
+        user-select: none;
+        white-space: nowrap;
+      }
+
+      .btn:active {
+        transform: translateY(1px);
+      }
+
+      .btn:focus {
+        outline: none;
+        box-shadow: var(--focus);
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 10px 22px rgba(59, 130, 246, 0.22);
+      }
+
+      .btn-primary:hover {
+        filter: brightness(0.98);
+      }
+
+      .btn-ghost {
+        background: transparent;
+        border-color: var(--border);
+        color: var(--muted);
+      }
+
+      .btn-ghost:hover {
+        filter: brightness(0.98);
+      }
+
+      .list-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 14px;
+        padding-top: 12px;
+        border-top: 1px dashed rgba(15, 23, 42, 0.15);
+        color: var(--muted);
+        font-size: 13px;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .count strong {
+        color: var(--text);
+      }
+
+      .todo-list {
+        margin: 14px 0 0 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 10px;
+      }
+
+      .todo-item {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 12px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        align-items: center;
+        background: #fff;
+      }
+
+      .todo-main {
+        display: grid;
+        gap: 6px;
+        min-width: 0;
+      }
+
+      .todo-topline {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+
+      .checkbox {
+        width: 18px;
+        height: 18px;
+        border-radius: 6px;
+        border: 1px solid rgba(15, 23, 42, 0.25);
+        display: inline-grid;
+        place-items: center;
+        background: #fff;
+        flex: 0 0 auto;
+      }
+
+      /* purely visual "checked" state for the mock */
+      .checkbox.checked {
+        background: rgba(6, 182, 212, 0.12);
+        border-color: rgba(6, 182, 212, 0.55);
+      }
+
+      .checkbox.checked::after {
+        content: "";
+        width: 10px;
+        height: 10px;
+        border-radius: 4px;
+        background: var(--success);
+        box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.14);
+      }
+
+      .task-text {
+        font-weight: 600;
+        font-size: 14px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .task-text.completed {
+        text-decoration: line-through;
+        color: rgba(100, 116, 139, 0.85);
+        font-weight: 600;
+      }
+
+      .task-subtext {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .actions {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .icon-btn {
+        border: 1px solid var(--border);
+        background: #fff;
+        color: var(--text);
+        padding: 10px 10px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 700;
+        line-height: 1;
+        transition: box-shadow 120ms ease, transform 120ms ease, filter 120ms ease;
+      }
+
+      .icon-btn:hover {
+        filter: brightness(0.99);
+      }
+
+      .icon-btn:active {
+        transform: translateY(1px);
+      }
+
+      .icon-btn:focus {
+        outline: none;
+        box-shadow: var(--focus);
+      }
+
+      .icon-btn.edit {
+        border-color: rgba(59, 130, 246, 0.35);
+        color: rgba(37, 99, 235, 1);
+      }
+
+      .icon-btn.delete {
+        border-color: rgba(239, 68, 68, 0.35);
+        color: rgba(239, 68, 68, 1);
+      }
+
+      .hint {
+        margin-top: 14px;
+        padding: 12px 14px;
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(59, 130, 246, 0.18);
+        background: rgba(59, 130, 246, 0.06);
+        color: rgba(71, 85, 105, 1);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .hint strong {
+        color: var(--text);
+      }
+
+      /* Mock "editing" row (shows how edit mode looks) */
+      .todo-item.editing {
+        border-color: rgba(59, 130, 246, 0.35);
+        background: rgba(59, 130, 246, 0.04);
+      }
+
+      .edit-row {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .btn-small {
+        padding: 10px 12px;
+        font-size: 13px;
+        border-radius: 12px;
+      }
+
+      .btn-success {
+        background: var(--success);
+        color: #fff;
+        box-shadow: 0 10px 18px rgba(6, 182, 212, 0.18);
+      }
+
+      .btn-danger {
+        background: var(--error);
+        color: #fff;
+        box-shadow: 0 10px 18px rgba(239, 68, 68, 0.14);
+      }
+
+      footer {
+        padding: 14px 22px 18px 22px;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 12px;
+        background: rgba(249, 250, 251, 0.6);
+      }
+
+      @media (max-width: 560px) {
+        .input-row {
+          grid-template-columns: 1fr;
+        }
+
+        .todo-item {
+          grid-template-columns: 1fr;
+        }
+
+        .actions {
+          justify-content: flex-start;
+        }
+
+        .edit-row {
+          grid-template-columns: 1fr;
+        }
+
+        .btn,
+        .icon-btn {
+          width: 100%;
+        }
+      }
+    </style>
   </head>
+
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <div class="page">
+      <div class="card" role="application" aria-label="To-do list UI mock">
+        <header>
+          <div class="title-row">
+            <div>
+              <h1>To‑Do List</h1>
+              <p class="subtitle">
+                Single-column layout with task input at the top and tasks listed below.
+                Includes <strong>add</strong>, <strong>edit</strong>, and <strong>delete</strong> controls.
+              </p>
+            </div>
+            <div class="pill" aria-label="Mock status indicator">
+              <span class="dot" aria-hidden="true"></span>
+              Static mock (no React)
+            </div>
+          </div>
+        </header>
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+        <main>
+          <section aria-label="Add a new task">
+            <div class="input-row">
+              <div class="field">
+                <div class="label">New task</div>
+                <input
+                  class="text-input"
+                  type="text"
+                  placeholder="e.g., Buy groceries"
+                  aria-label="Task input (mock)"
+                  disabled
+                />
+              </div>
+              <button class="btn btn-primary" type="button" disabled aria-disabled="true">
+                + Add task
+              </button>
+            </div>
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+            <div class="list-meta" aria-label="Task list meta">
+              <div class="count">
+                <strong>3</strong> tasks • <strong>1</strong> completed
+              </div>
+              <button class="btn btn-ghost" type="button" disabled aria-disabled="true">
+                Clear completed
+              </button>
+            </div>
+          </section>
+
+          <section aria-label="Task list">
+            <ul class="todo-list">
+              <li class="todo-item" aria-label="Task item: Draft project outline">
+                <div class="todo-main">
+                  <div class="todo-topline">
+                    <span class="checkbox" aria-hidden="true"></span>
+                    <div class="task-text">Draft project outline</div>
+                  </div>
+                  <div class="task-subtext">Added today • Priority: normal</div>
+                </div>
+                <div class="actions" aria-label="Task actions">
+                  <button class="icon-btn edit" type="button" disabled aria-disabled="true" aria-label="Edit task (mock)">
+                    Edit
+                  </button>
+                  <button class="icon-btn delete" type="button" disabled aria-disabled="true" aria-label="Delete task (mock)">
+                    Delete
+                  </button>
+                </div>
+              </li>
+
+              <li class="todo-item editing" aria-label="Task item in edit mode: Call the dentist">
+                <div class="todo-main">
+                  <div class="label">Editing</div>
+                  <div class="edit-row">
+                    <input
+                      class="text-input"
+                      type="text"
+                      value="Call the dentist"
+                      aria-label="Edit task text (mock)"
+                      disabled
+                    />
+                    <button class="btn btn-small btn-success" type="button" disabled aria-disabled="true">
+                      Save
+                    </button>
+                    <button class="btn btn-small btn-ghost" type="button" disabled aria-disabled="true">
+                      Cancel
+                    </button>
+                  </div>
+                  <div class="task-subtext">Tip: edit mode replaces the row content</div>
+                </div>
+              </li>
+
+              <li class="todo-item" aria-label="Task item: Review pull requests (completed)">
+                <div class="todo-main">
+                  <div class="todo-topline">
+                    <span class="checkbox checked" aria-hidden="true"></span>
+                    <div class="task-text completed">Review pull requests</div>
+                  </div>
+                  <div class="task-subtext">Completed • Nice work</div>
+                </div>
+                <div class="actions" aria-label="Task actions">
+                  <button class="icon-btn edit" type="button" disabled aria-disabled="true" aria-label="Edit task (mock)">
+                    Edit
+                  </button>
+                  <button class="icon-btn delete" type="button" disabled aria-disabled="true" aria-label="Delete task (mock)">
+                    Delete
+                  </button>
+                </div>
+              </li>
+            </ul>
+
+            <div class="hint" role="note" aria-label="Mock hint">
+              <strong>Mock behavior:</strong> Buttons and inputs are disabled because this is a static HTML mock.
+              It demonstrates layout, styling, and control placement for add/edit/delete.
+            </div>
+          </section>
+        </main>
+
+        <footer>
+          <div>
+            Theme: light • Accents: <span style="color: var(--primary); font-weight: 700">#3b82f6</span> and
+            <span style="color: var(--success); font-weight: 700">#06b6d4</span>
+          </div>
+        </footer>
+      </div>
+    </div>
   </body>
 </html>
